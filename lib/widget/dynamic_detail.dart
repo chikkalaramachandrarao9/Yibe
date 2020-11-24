@@ -3,46 +3,35 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:yibe_final_ui/pages/PageHandler.dart';
+import 'package:yibe_final_ui/model/Activity.dart';
+import 'package:yibe_final_ui/model/event.dart';
+import 'package:yibe_final_ui/services/activity_database.dart';
+import 'package:yibe_final_ui/services/eventdatabase.dart';
 
-
+// ●
 
 class DynamicDetails extends StatefulWidget {
-  static final routename = "/DynamicDetails";
   final type;
-  final String image;
-  final String userImage;
-  final List<String> tags;
-  final String price;
-  final String date;
-  final String time;
-  final String location;
-  final String title;
-  final int totalNoofparticipation;
-  DynamicDetails({
-    Key key,
-    this.image,
-    this.userImage,
-    this.tags,
-    this.type,
-    this.price,
-    this.date,
-    this.time,
-    this.location,
-    this.title,
-    this.totalNoofparticipation,
-  }) : super(key: key);
+  String id;
+  DynamicDetails({this.type});
+
+  DynamicDetails.details({this.type, this.id});
+
   @override
   _DynamicDetailsState createState() => _DynamicDetailsState();
 }
 
 class _DynamicDetailsState extends State<DynamicDetails>
     with TickerProviderStateMixin {
+  ActivityDetails activityDetails;
+  EventDetails eventDetails;
+
   TextEditingController textEditingController = new TextEditingController();
   final event = "Events Details";
   final internship = "Internship";
   final quickFixes = "QuickFixes";
   final projects = "projects";
+
   final sports = "Activity Sports";
   final peerLearn = "Activity Skills+(Peer Learn)";
   final socialLearn = "Activity Skills+(Social Learn)";
@@ -54,10 +43,6 @@ class _DynamicDetailsState extends State<DynamicDetails>
   bool _showDisclaimer = false;
   bool _showTermsAndConditions = false;
   int selectedIndex = -1;
-  bool _isConformed = false;
-
-  List<String> skillsReq = ["Flutter", "Android", "IPhoneDev"];
-
   ScrollController _scrollController = new ScrollController();
 
   List<String> a = [
@@ -71,27 +56,22 @@ class _DynamicDetailsState extends State<DynamicDetails>
   // var _index = 0;
 
   //==================================  for Internship Image Slider ===============================================
-  final List<String> friendList = [
-    'assets/images/friend1.png'
-        'assets/images/friend2.png'
-        'assets/images/friend3.png'
-        'assets/images/friend4.png'
-        'assets/images/friend5.png'
+
+  final List<String> imgList = [
+    'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
+    'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
+    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
+    'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
+    'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
+    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
-  // final List<String> imgList = [
-  //   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
-  //   // 'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-  //   // 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
-  //   // 'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-  //   // 'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-  //   // 'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
-  // ];
   List<Widget> imageSliders;
   var _current = 1;
 
   @override
   void initState() {
     type = widget.type;
+
     // type = event;
     // list.add(event);
     // list.add(internship);
@@ -102,226 +82,143 @@ class _DynamicDetailsState extends State<DynamicDetails>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: Visibility(
-          // visible: !pressed,
-          child: FloatingActionButton(
-            child: Icon(Icons.add),
-            backgroundColor: Color(0xFF0CB5BB),
-            onPressed: () {
-              // openBottomModelSheet();
-              //   _pc.show();
-              setState(() {
-                //  pressed = true;
-              });
-            },
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          // notchMargin: 10,
-          child: Container(
-            height: 50,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) {
-                        return PageHandler();
-                      }), (route) => false);
-                    },
-                    child: SvgPicture.asset(
-                      "assets/images/home-24px 1.svg",
-                      height: 30,
-                      // color:
-                      //   currentTab == 0 ? Color(0xFFFD8F6E) : Colors.black
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: SvgPicture.asset(
-                      "assets/images/account_balance_24px.svg",
-                      height: 30,
-                      color: Color(0xFF0CB5BB),
-                    ),
-                  ),
-                  SizedBox.shrink(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) {
-                        return PageHandler();
-                      }), (route) => false);
-                    },
-                    child: SvgPicture.asset(
-                      "assets/images/language_24px.svg",
-                      height: 30,
-                      // color: currentTab == 2 ? Color(0xFFFD8F6E) : Colors.black,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) {
-                        return PageHandler();
-                      }), (route) => false);
-                    },
-                    child: SvgPicture.asset(
-                      "assets/images/account_circle_24px.svg",
-                      height: 30,
-                      //  color: currentTab == 3 ? Color(0xFFFD8F6E) : Colors.black,
-                    ),
-                  ),
-                ],
+    return StreamBuilder(
+        stream: type == event
+            ? EventDatabaseService().getEventDetails(widget.id)
+            : type == sports
+            ? ActivityDatabaseService()
+            .getActivityDetails(widget.id, 'Sport')
+            : type == eSports
+            ? ActivityDatabaseService()
+            .getActivityDetails(widget.id, 'ESport')
+            : type == peerLearn || type == socialLearn
+            ? ActivityDatabaseService()
+            .getActivityDetails(widget.id, 'Skill')
+            : null,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (type == event) {
+              eventDetails = snapshot.data;
+            }
+            if (type == sports ||
+                type == eSports ||
+                type == peerLearn ||
+                type == socialLearn) {
+              activityDetails = snapshot.data;
+            }
+          }
+          return Scaffold(
+              appBar: AppBar(
+                title: Text(type),
+                actions: [],
               ),
-            ),
-          ),
-        ),
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          actions: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  SizedBox(
-                    width: 20,
-                  ),
-                  GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 30.0,
-                      )),
-                  Spacer(),
-                  SvgPicture.asset(
-                    "assets/images/green_logo.svg",
-                    width: 30,
-                  ),
-                  Spacer(),
-                  SizedBox(
-                    width: 50,
-                  ),
-                ],
+              body: Container(
+                height: MediaQuery.of(context).size.height,
+                color: Colors.white,
+                child: Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: SingleChildScrollView(
+                        physics: ScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10),
+
+                            // SizedBox(
+                            //   height: 30,
+                            //   width: MediaQuery.of(context).size.width,
+                            //   child: ScrollablePositionedList.builder(
+                            //     scrollDirection: Axis.horizontal,
+                            //     itemCount: 500,
+                            //     itemBuilder: (context, index) => Text('Item $index'),
+                            //     itemScrollController: itemScrollController,
+                            //     itemPositionsListener: itemPositionsListener,
+                            //   ),
+                            // ),
+                            //=============================== events , internship , quick , projects, sports , peerLearn , socialLearn , ESport
+                            _imageAndTages(),
+                            //=============================== events , internship , quick , projects, sports , peerLearn , socialLearn , ESport
+                            _title(),
+                            //== ______ , __________ , _____ , ________ , sports , peerLearn , socialLearn , ESport
+                            _activityTitle_Time_Location(),
+                            //=============================== events , internship , quick , _______ , ______ , _________ , ___________ , ______
+                            _dateTimeLocation(),
+                            //=============================== events , __________ , _____ , _______ , ______ , _________ , ___________ , ______
+                            _friendsAndArtist(),
+                            //=============================== ______ , internship , quick , _______ , ______ , _________ , ___________ , ______
+                            _workDetails(),
+
+                            //=============================== ______ , __________ , _____ , Projects , ______ , _________ , ___________ , ______
+                            _stage_Progress_Team(),
+
+                            //=============================== ______ , __________ , _____ , ________ , sports , peerLearn , socialLearn , ESport
+                            _resourse_Disc_Rules(),
+
+                            //=============================== events , internship , quick , projects , sports , peerLearn , socialLearn , ESport
+                            _disclaimer(),
+
+                            //=============================== events , __________ , _____ , ________ ,  ______ , _________ , ___________ , ______
+                            _termsAndConditions(),
+
+                            SizedBox(
+                              height: 65,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    //== events , internship , quick , projects
+                    _bottomBar(),
+                  ],
+                ),
+              ));
+        });
+  }
+
+  _imageAndTages() {
+    imageSliders = imgList
+        .map((item) => Container(
+      height: 500,
+      child: Container(
+        decoration: new BoxDecoration(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(20),
+              topRight: Radius.circular(15),
+              topLeft: Radius.circular(15)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black45,
+              //  color: list[new Random().nextInt(5)],
+              blurRadius: 2.0, // soften the shadow
+              spreadRadius: 0.0, //extend the shadow
+              offset: Offset(
+                  4.0, // Move to right 10  horizontally
+                  5 // Move to bottom 10 Vertically
               ),
             )
           ],
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          color: Colors.white,
-          child: Stack(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
-                child: SingleChildScrollView(
-                  physics: ScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 10),
-
-                      // SizedBox(
-                      //   height: 30,
-                      //   width: MediaQuery.of(context).size.width,
-                      //   child: ScrollablePositionedList.builder(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: 500,
-                      //     itemBuilder: (context, index) => Text('Item $index'),
-                      //     itemScrollController: itemScrollController,
-                      //     itemPositionsListener: itemPositionsListener,
-                      //   ),
-                      // ),
-                      //=============================== events , internship , quick , projects, sports , peerLearn , socialLearn , ESport
-                      _imageAndTages(),
-                      //=============================== events , internship , quick , projects, sports , peerLearn , socialLearn , ESport
-                      _title(),
-                      //== ______ , __________ , _____ , ________ , sports , peerLearn , socialLearn , ESport
-                      _activityTitle_Time_Location(),
-                      //=============================== events , internship , quick , _______ , ______ , _________ , ___________ , ______
-                      _dateTimeLocation(),
-                      //=============================== events , __________ , _____ , _______ , ______ , _________ , ___________ , ______
-                      _friendsAndArtist(),
-                      //=============================== ______ , internship , quick , _______ , ______ , _________ , ___________ , ______
-                      _workDetails(),
-
-                      //=============================== ______ , __________ , _____ , Projects , ______ , _________ , ___________ , ______
-                      _stage_Progress_Team(),
-
-                      //=============================== ______ , __________ , _____ , ________ , sports , peerLearn , socialLearn , ESport
-                      _resourse_Disc_Rules(),
-
-                      //=============================== events , internship , quick , projects , sports , peerLearn , socialLearn , ESport
-                      _disclaimer(),
-
-                      //=============================== events , __________ , _____ , ________ ,  ______ , _________ , ___________ , ______
-                      _termsAndConditions(),
-
-                      SizedBox(
-                        height: 65,
-                      )
-                    ],
-                  ),
+        height: 500,
+        margin: EdgeInsets.all(5.0),
+        child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            child: Stack(
+              children: <Widget>[
+                Container(),
+                Image.network(
+                  item,
+                  fit: BoxFit.cover,
+                  width: 1000.0,
+                  height: 1000,
                 ),
-              ),
-              //== events , internship , quick , projects
-              _bottomBar(),
-            ],
-          ),
-        ));
-  }
-
-  _imageAndTages() {
-    imageSliders = [widget.image]
-        .map((item) => Container(
-              height: 500,
-              child: Container(
-                decoration: new BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(20),
-                      topRight: Radius.circular(15),
-                      topLeft: Radius.circular(15)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black45,
-                      //  color: list[new Random().nextInt(5)],
-                      blurRadius: 2.0, // soften the shadow
-                      spreadRadius: 0.0, //extend the shadow
-                      offset: Offset(
-                          4.0, // Move to right 10  horizontally
-                          5 // Move to bottom 10 Vertically
-                          ),
-                    )
-                  ],
-                ),
-                height: 500,
-                margin: EdgeInsets.all(5.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(),
-                        Image.asset(
-                          'assets/images/money_matter_college_section_page.png',
-                          fit: BoxFit.fitWidth,
-                          width: 1000.0,
-                          height: 1000,
-                        ),
-                      ],
-                    )),
-              ),
-            ))
+              ],
+            )),
+      ),
+    ))
         .toList();
 
     return Column(
@@ -344,19 +241,19 @@ class _DynamicDetailsState extends State<DynamicDetails>
                     color: type == quickFixes || type == sports
                         ? hexToColor("#00D09E")
                         : type == projects ||
-                                type == peerLearn ||
-                                type == socialLearn
-                            ? hexToColor("#F89E26")
-                            : type == eSports
-                                ? hexToColor("#75A4FF")
-                                : Colors.white,
+                        type == peerLearn ||
+                        type == socialLearn
+                        ? hexToColor("#F89E26")
+                        : type == eSports
+                        ? hexToColor("#75A4FF")
+                        : Colors.white,
                     // color: hexToColor("#00D09E"),
                     blurRadius: 2.0, // soften the shadow
                     spreadRadius: 1.0, //extend the shadow
                     offset: Offset(
                         0.0, // Move to right 10  horizontally
                         4 // Move to bottom 10 Vertically
-                        ),
+                    ),
                   )
                 ],
               ),
@@ -374,12 +271,8 @@ class _DynamicDetailsState extends State<DynamicDetails>
                       : Border.all(width: 0, color: hexToColor("#d4d4d4")),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   image: DecorationImage(
-                      image: AssetImage(
-                        widget.image,
-                      ),
-
-                      //NetworkImage(imgList[4]),
-
+                      image: NetworkImage(
+                          type == event ? eventDetails.posterUrl : imgList[4]),
                       fit: BoxFit.cover),
                 ),
 
@@ -420,13 +313,13 @@ class _DynamicDetailsState extends State<DynamicDetails>
               bottom: 10,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [widget.image].map((url) {
-                  int index = [widget.image].indexOf(url);
+                children: imgList.map((url) {
+                  int index = imgList.indexOf(url);
                   return Container(
                     width: 8.0,
                     height: 8.0,
                     margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _current == index ? Colors.white : Colors.grey,
@@ -453,9 +346,8 @@ class _DynamicDetailsState extends State<DynamicDetails>
                       height: 30,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: widget.tags.length,
+                          itemCount: 10,
                           itemBuilder: (context, index) {
-                            var tag = widget.tags[index];
                             return Row(
                               children: [
                                 Container(
@@ -467,12 +359,12 @@ class _DynamicDetailsState extends State<DynamicDetails>
                                     padding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 5),
                                     child: Text(
-                                      '#$tag',
+                                      "#Music",
                                       style: TextStyle(
                                           color: type == quickFixes ||
-                                                  type == internship ||
-                                                  type == projects ||
-                                                  type == event
+                                              type == internship ||
+                                              type == projects ||
+                                              type == event
                                               ? hexToColor("#424283")
                                               : hexToColor("#0CB5BB"),
                                           fontWeight: FontWeight.w500,
@@ -520,7 +412,9 @@ class _DynamicDetailsState extends State<DynamicDetails>
         margin: const EdgeInsets.only(top: 10, right: 15, left: 15),
         width: MediaQuery.of(context).size.width,
         child: Text(
-          type == event ? widget.title : "Project Name ",
+          type == event && eventDetails != null
+              ? eventDetails.eventName
+              : "Project Name ",
           style: TextStyle(
               color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
         ),
@@ -603,41 +497,39 @@ class _DynamicDetailsState extends State<DynamicDetails>
         child: ListTile(
           contentPadding: EdgeInsets.all(0),
           leading: CircleAvatar(
-            backgroundImage: AssetImage(widget.userImage),
+            backgroundImage: NetworkImage(imgList[0]),
             radius: 25,
           ),
           title: Row(
             children: [
-              Text(widget.type == sports ? "Yash Simp" : "Tarang Soni ",
+              Text("Tarang Soni ",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               SvgPicture.asset('assets/images/verified_user.svg'),
             ],
           ),
-          subtitle: Text(widget.type == sports ? "@yeashSimp" : "@MeGaribHu",
+          subtitle: Text("@MeGaribHu",
               style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
                   fontWeight: FontWeight.w500)),
-          trailing: type == quickFixes
-              ? SizedBox()
-              : type != peerLearn
-                  ? SizedBox(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SvgPicture.asset('assets/images/users_icon.svg'),
-                          Text(
-                            " 7/10 ",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: hexToColor("#0CB5BB"),
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      ),
-                    )
-                  : SizedBox(),
+          trailing: type != peerLearn
+              ? SizedBox(
+            width: 100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SvgPicture.asset('assets/images/users_icon.svg'),
+                Text(
+                  " 7/10 ",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: hexToColor("#0CB5BB"),
+                      fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+          )
+              : SizedBox(),
         ),
       );
     }
@@ -660,7 +552,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Galli Cricket (One-Tip)",
+              activityDetails.activityTitle,
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 18,
@@ -689,7 +581,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                     SvgPicture.asset("assets/images/location.svg"),
                     SizedBox(width: 10),
                     Text(
-                      widget.location,
+                      'John St.',
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   ],
@@ -743,7 +635,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   SvgPicture.asset('assets/images/play_circle.svg'),
                   SizedBox(width: 5),
                   Text(
-                    "${widget.date} | ${widget.time}",
+                    "31st Mar '20 | 24:24 PM",
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
@@ -758,7 +650,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   SvgPicture.asset('assets/images/money.svg'),
                   SizedBox(width: 5),
                   Text(
-                    "${widget.price} ",
+                    "3500 per Month",
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
@@ -772,7 +664,11 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   SvgPicture.asset('assets/images/calender.svg'),
                   SizedBox(width: 5),
                   Text(
-                    "${widget.date} ${widget.time}",
+                    eventDetails != null
+                        ? eventDetails.dateOfEvent +
+                        '|' +
+                        eventDetails.timeOfEvent
+                        : '',
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
@@ -786,7 +682,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 SvgPicture.asset('assets/images/location.svg'),
                 SizedBox(width: 5),
                 Text(
-                  widget.location,
+                  eventDetails != null ? eventDetails.address : 'Mg Street',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.w500,
@@ -800,7 +696,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 SvgPicture.asset('assets/images/hourglass.svg'),
                 SizedBox(width: 5),
                 Text(
-                  "2 hours",
+                  eventDetails != null ? eventDetails.duration : '1 hour',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.w500,
@@ -818,8 +714,9 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   ),
                   SizedBox(width: 5),
                   Text(
-                    "${widget.totalNoofparticipation}",
-                    //   "${widget.totalNoofparticipation}",
+                    eventDetails != null
+                        ? eventDetails.noOfParticipants
+                        : '200',
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
@@ -855,14 +752,13 @@ class _DynamicDetailsState extends State<DynamicDetails>
             height: 50,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 5,
+                itemCount: 10,
                 itemBuilder: (context, index) {
                   if (index == 0)
                     return Padding(
                       padding: const EdgeInsets.only(left: 20, right: 5),
                       child: CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/friend1.png'),
+                        backgroundImage: NetworkImage(imgList[index % 5]),
                         radius: 25,
                         backgroundColor: hexToColor("#d4d4d4"),
                       ),
@@ -870,8 +766,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/friend${index + 1}.png'), // AssetImage('assets/images/single_point_map.png'),
+                      backgroundImage: NetworkImage(imgList[index % 5]),
                       radius: 25,
                       backgroundColor: hexToColor("#d4d4d4"),
                     ),
@@ -884,7 +779,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Text(
-              "Key Speaker/ Artist",
+              "Artist",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
             ),
           ),
@@ -893,14 +788,13 @@ class _DynamicDetailsState extends State<DynamicDetails>
             height: 50,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 1,
+                itemCount: 4,
                 itemBuilder: (context, index) {
                   if (index == 0)
                     return Padding(
                       padding: const EdgeInsets.only(left: 20, right: 5),
                       child: CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/speaker.png'),
+                        backgroundImage: NetworkImage(imgList[index % 5]),
                         radius: 25,
                         backgroundColor: hexToColor("#d4d4d4"),
                       ),
@@ -908,7 +802,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: CircleAvatar(
-                      //  backgroundImage: AssetImage('assets/images/single_point_map.png'),
+                      backgroundImage: NetworkImage(imgList[index % 5]),
                       radius: 25,
                       backgroundColor: hexToColor("#d4d4d4"),
                     ),
@@ -931,7 +825,9 @@ class _DynamicDetailsState extends State<DynamicDetails>
             ),
             width: MediaQuery.of(context).size.width,
             child: Text(
-              "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian to fight against western lassical enthusiasts who think that the genre is flawed like come on bro just let people have some fun.   \n\n => This Font Size is 10 / According to Figma. ",
+              type == event && eventDetails != null
+                  ? eventDetails.description
+                  : "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian to fight against western lassical enthusiasts who think that the genre is flawed like come on bro just let people have some fun.   \n\n => This Font Size is 10 / According to Figma. ",
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 10,
@@ -957,7 +853,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
 
           Padding(
             padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
             child: Text(
               "Work Details",
               style: TextStyle(
@@ -999,21 +895,21 @@ class _DynamicDetailsState extends State<DynamicDetails>
               height: 30,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: skillsReq.length,
+                  itemCount: 6,
                   itemBuilder: (context, index) {
                     return Row(
                       children: [
                         SizedBox(width: index == 0 ? 15 : 8),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: hexToColor("#424283"),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                              BorderRadius.all(Radius.circular(10))),
                           child: Text(
-                            skillsReq[index],
+                            "Flutter",
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                         ),
@@ -1027,7 +923,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
 
           Padding(
             padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
             child: Text(
               "Work Direction",
               style: TextStyle(
@@ -1099,14 +995,14 @@ class _DynamicDetailsState extends State<DynamicDetails>
                           decoration: BoxDecoration(
                               color: hexToColor("#424283"),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                              BorderRadius.all(Radius.circular(10))),
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
                             child: Text(
                               "Certificate",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
+                              TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
                         ),
@@ -1143,12 +1039,12 @@ class _DynamicDetailsState extends State<DynamicDetails>
                         SizedBox(width: index == 0 ? 15 : 8),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: hexToColor("#424283"),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                              BorderRadius.all(Radius.circular(10))),
                           child: Text(
                             "Flutter",
                             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -1259,7 +1155,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                                     height: 30,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                        //color: hexToColor("#424283"),
+                                      //color: hexToColor("#424283"),
                                         border: Border.all(
                                             color: hexToColor("#424283")),
                                         borderRadius: BorderRadius.all(
@@ -1347,15 +1243,15 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 selectedIndex == -1
                     ? BoxShadow()
                     : BoxShadow(
-                        color: Colors.black45,
-                        //  color: list[new Random().nextInt(5)],
-                        blurRadius: 2.0, // soften the shadow
-                        spreadRadius: 1.0, //extend the shadow
-                        offset: Offset(
-                            0.0, // Move to right 10  horizontally
-                            0 // Move to bottom 10 Vertically
-                            ),
-                      )
+                  color: Colors.black45,
+                  //  color: list[new Random().nextInt(5)],
+                  blurRadius: 2.0, // soften the shadow
+                  spreadRadius: 1.0, //extend the shadow
+                  offset: Offset(
+                      0.0, // Move to right 10  horizontally
+                      0 // Move to bottom 10 Vertically
+                  ),
+                )
               ],
             ),
             child: Column(
@@ -1385,7 +1281,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                     child: Text(
                       "Team Required",
                       style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                      TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                     ),
                   ),
 
@@ -1421,7 +1317,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                                           : selectedIndex.toDouble() * 98,
                                       curve: Curves.easeOut,
                                       duration:
-                                          const Duration(milliseconds: 300),
+                                      const Duration(milliseconds: 300),
                                     );
                                   }
                                 });
@@ -1433,22 +1329,21 @@ class _DynamicDetailsState extends State<DynamicDetails>
                                 decoration: BoxDecoration(
                                   color: Colors.grey,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(14)),
+                                  BorderRadius.all(Radius.circular(14)),
                                   image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/single_point_map.png'), //NetworkImage(imgList[(index) % 5]),
+                                      image: NetworkImage(imgList[(index) % 5]),
                                       fit: BoxFit.cover),
                                   boxShadow: [
                                     selectedIndex == index
                                         ? BoxShadow(
-                                            color: Colors.black45,
-                                            //  color: list[new Random().nextInt(5)],
-                                            blurRadius:
-                                                2.0, // soften the shadow
-                                            spreadRadius:
-                                                2.0, //extend the shadow
-                                            //   offset: Offset(0.0, 1.0)
-                                          )
+                                      color: Colors.black45,
+                                      //  color: list[new Random().nextInt(5)],
+                                      blurRadius:
+                                      2.0, // soften the shadow
+                                      spreadRadius:
+                                      2.0, //extend the shadow
+                                      //   offset: Offset(0.0, 1.0)
+                                    )
                                         : BoxShadow()
                                   ],
                                 ),
@@ -1456,8 +1351,8 @@ class _DynamicDetailsState extends State<DynamicDetails>
                                   decoration: new BoxDecoration(
                                     color: selectedIndex != -1
                                         ? selectedIndex == index
-                                            ? Colors.white.withOpacity(0.0)
-                                            : Colors.white.withOpacity(0.7)
+                                        ? Colors.white.withOpacity(0.0)
+                                        : Colors.white.withOpacity(0.7)
                                         : Colors.white.withOpacity(0.0),
                                   ),
                                 ),
@@ -1473,7 +1368,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                     children: [
                       Padding(
                         padding:
-                            const EdgeInsets.only(top: 13, left: 15, right: 15),
+                        const EdgeInsets.only(top: 13, left: 15, right: 15),
                         child: Text(
                           "Yibe : " + selectedIndex.toString(),
                           style: TextStyle(
@@ -1482,7 +1377,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                       ),
                       Container(
                         margin:
-                            const EdgeInsets.only(top: 10, left: 15, right: 15),
+                        const EdgeInsets.only(top: 10, left: 15, right: 15),
                         width: MediaQuery.of(context).size.width,
                         child: Text(
                           "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche\n\n  => Selected Index ==  " +
@@ -1495,7 +1390,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                       ),
                       Padding(
                         padding:
-                            const EdgeInsets.only(top: 10, left: 15, right: 15),
+                        const EdgeInsets.only(top: 10, left: 15, right: 15),
                         child: Text(
                           "Resources",
                           style: TextStyle(
@@ -1504,7 +1399,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                       ),
                       Container(
                         margin:
-                            const EdgeInsets.only(top: 10, left: 15, right: 15),
+                        const EdgeInsets.only(top: 10, left: 15, right: 15),
                         width: MediaQuery.of(context).size.width,
                         child: Text(
                           "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche\n\n  => Selected Index ==  " +
@@ -1553,8 +1448,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                               color: hexToColor("#7280FF"), width: 2),
                           borderRadius: BorderRadius.all(Radius.circular(14)),
                           image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/single_point_map.png'), // NetworkImage(imgList[(index + 2) % 5]),
+                              image: NetworkImage(imgList[(index + 2) % 5]),
                               fit: BoxFit.cover),
                         ),
                       ),
@@ -1584,7 +1478,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                               // border: Border.all(
                               //     color: hexToColor("#7280FF"), width: 1.5),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15))),
+                              BorderRadius.all(Radius.circular(15))),
                           child: Text(
                             "Icon",
                             style: TextStyle(color: Colors.white, fontSize: 10),
@@ -1626,8 +1520,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                             //     color: hexToColor("#7280FF"), width: 1.5),
                             borderRadius: BorderRadius.all(Radius.circular(45)),
                             image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/single_point_map.png'), // NetworkImage(imgList[(index + 3) % 5]),
+                                image: NetworkImage(imgList[(index + 3) % 5]),
                                 fit: BoxFit.cover)),
                       ),
                     ],
@@ -1698,83 +1591,83 @@ class _DynamicDetailsState extends State<DynamicDetails>
                         children: [
                           index < a.length
                               ? SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        b.add(a[index]);
-                                        a.removeAt(index);
-                                      });
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SvgPicture.asset(
-                                            "assets/images/dot_icon.svg"),
-                                        SizedBox(width: 7),
-                                        Container(
-                                          width: (MediaQuery.of(context)
-                                                  .size
-                                                  .width) *
-                                              0.3,
-                                          child: Text(
-                                            a[index],
-                                            style: TextStyle(fontSize: 15),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )
-                                      ],
+                            width:
+                            MediaQuery.of(context).size.width * 0.4,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  b.add(a[index]);
+                                  a.removeAt(index);
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                      "assets/images/dot_icon.svg"),
+                                  SizedBox(width: 7),
+                                  Container(
+                                    width: (MediaQuery.of(context)
+                                        .size
+                                        .width) *
+                                        0.3,
+                                    child: Text(
+                                      a[index],
+                                      style: TextStyle(fontSize: 15),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                )
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
                               : SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                ),
+                            width:
+                            MediaQuery.of(context).size.width * 0.4,
+                          ),
                           index < b.length
                               ? SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        a.add(b[index]);
-                                        b.removeAt(index);
-                                      });
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SvgPicture.asset(
-                                            "assets/images/dot_icon.svg"),
-                                        SizedBox(width: 7),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.3,
-                                          child: Text(
-                                            b[index],
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Colors.grey,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )
-                                      ],
+                            width:
+                            MediaQuery.of(context).size.width * 0.4,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  a.add(b[index]);
+                                  b.removeAt(index);
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                      "assets/images/dot_icon.svg"),
+                                  SizedBox(width: 7),
+                                  Container(
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width *
+                                        0.3,
+                                    child: Text(
+                                      b[index],
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        decoration:
+                                        TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                )
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
                               : SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                ),
+                            width:
+                            MediaQuery.of(context).size.width * 0.4,
+                          ),
                         ],
                       ),
                     );
@@ -1811,7 +1704,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 margin: EdgeInsets.symmetric(vertical: 10),
                 width: MediaQuery.of(context).size.width,
                 child: Text(
-                  "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian  think that the genre is flawed like come on bro just let people have some fun. ",
+                  activityDetails.description,
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 10,
@@ -1850,7 +1743,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 margin: EdgeInsets.symmetric(vertical: 10),
                 width: MediaQuery.of(context).size.width,
                 child: Text(
-                  "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian  think that the genre is flawed like come on bro just let people have some fun. ",
+                  activityDetails.rules,
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 10,
@@ -1962,7 +1855,9 @@ class _DynamicDetailsState extends State<DynamicDetails>
               margin: EdgeInsets.symmetric(vertical: 10),
               width: MediaQuery.of(context).size.width,
               child: Text(
-                "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian  think that the genre is flawed like come on bro just let people have some fun. ",
+                type == event
+                    ? eventDetails.disclaimer
+                    : "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian  think that the genre is flawed like come on bro just let people have some fun. ",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 10,
@@ -2018,7 +1913,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 margin: EdgeInsets.symmetric(vertical: 10),
                 width: MediaQuery.of(context).size.width,
                 child: Text(
-                  "This very random organisation at this spectacualr venue presents an evening of Jazz. Jazz in India is a avery niche interest since most of the indian  think that the genre is flawed like come on bro just let people have some fun. ",
+                  eventDetails.termsAndConditions,
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 10,
@@ -2059,7 +1954,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 offset: Offset(
                     0.0, // Move to right 10  horizontally
                     0 // Move to bottom 10 Vertically
-                    ),
+                ),
               )
             ],
           ),
@@ -2070,9 +1965,9 @@ class _DynamicDetailsState extends State<DynamicDetails>
                   topRight: Radius.circular(5), topLeft: Radius.circular(5)),
             ),
             child: type == event ||
-                    type == internship ||
-                    type == quickFixes ||
-                    type == projects
+                type == internship ||
+                type == quickFixes ||
+                type == projects
                 ? _rowForEvent_Intern_QuickFix_Project()
                 : _rowForActivity_Sports(),
           ),
@@ -2095,9 +1990,7 @@ class _DynamicDetailsState extends State<DynamicDetails>
                 children: [
                   SvgPicture.asset('assets/images/money.svg'),
                   Text(
-                    widget.type == quickFixes
-                        ? "${widget.price}"
-                        : " Rs. ${widget.price}",
+                    " Rs. 500",
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -2122,51 +2015,37 @@ class _DynamicDetailsState extends State<DynamicDetails>
             ),
           ),
         Spacer(),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _isConformed = !_isConformed;
-            });
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: 10, right: 10, bottom: type == projects ? 10 : 0),
-                  width: 120,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: _isConformed
-                          ? Color(0xFF27AE60)
-                          : hexToColor("#424283"),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    child: widget.type == quickFixes
-                        ? Text(
-                            _isConformed ? "✓" : "Bid",
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          )
-                        : Text(
-                            _isConformed ? "Applied" : "Apply",
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                    top: 10, right: 10, bottom: type == projects ? 10 : 0),
+                width: 120,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: hexToColor("#424283"),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                  child: Text(
+                    "Apply",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
               ),
-              if (type != projects)
-                Text(
-                  "by 31/10/20",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
-                ),
-              if (type != projects)
-                SizedBox(
-                  height: 3,
-                )
-            ],
-          ),
+            ),
+            if (type != projects)
+              Text(
+                "by 20/20/20",
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+              ),
+            if (type != projects)
+              SizedBox(
+                height: 3,
+              )
+          ],
         )
       ],
     );
@@ -2190,25 +2069,16 @@ class _DynamicDetailsState extends State<DynamicDetails>
             ),
           ),
         Spacer(),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _isConformed = !_isConformed;
-            });
-          },
-          child: Container(
-            margin: EdgeInsets.only(top: 10, right: 10, bottom: 10),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: _isConformed ? Color(0xFF27AE60) : hexToColor("#157F83"),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Text(
-              type == peerLearn
-                  ? "Teach"
-                  : _isConformed ? "Request sent" : "Request to join",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
+        Container(
+          margin: EdgeInsets.only(top: 10, right: 10, bottom: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: hexToColor("#157F83"),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: Text(
+            type == peerLearn ? "Teach" : "Request to join",
+            style: TextStyle(color: Colors.white, fontSize: 18),
           ),
         )
       ],

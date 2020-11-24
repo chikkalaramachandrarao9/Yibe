@@ -1,20 +1,6 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
-    <CLASSES>
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_web-0.1.1" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-5.0.1+1" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/photo_gallery-0.3.0" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.5.2" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-0.2.1" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_dynamic_links-0.6.2" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.2.1" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/native_device_orientation-0.3.0" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-0.3.2" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_qr_bar_scanner-1.0.2" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.18.3" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-6.2.0" />
-      <root url="file://C:/src/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.14.3" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES />
   </library>

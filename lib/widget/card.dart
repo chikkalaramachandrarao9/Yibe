@@ -29,7 +29,8 @@ class BaseCard extends StatefulWidget {
       jobTitle,
       jobDuration,
       organiser,
-      organiserId;
+      organiserId,
+      docId;
   final List<String> tags;
   const BaseCard({
     this.pathOfimg,
@@ -48,6 +49,7 @@ class BaseCard extends StatefulWidget {
     this.type,
     this.projectDetail,
     this.workingPhase,
+    this.docId,
   });
   @override
   _BaseCardState createState() => _BaseCardState();
@@ -84,62 +86,62 @@ class _BaseCardState extends State<BaseCard> {
           children: [
             Row(// for image and protion of right side of images
                 children: [
-              Container(
-                height: 100.0,
-                width: 100.0,
-                child: Image.asset(widget.pathOfimg),
-              ), //Image show
-              SizedBox(width: 8.0),
-              SizedBox(
-                width: screenWidth - 120,
-                height: 100.0,
-                child: Column(
-                  mainAxisAlignment:
+                  Container(
+                    height: 100.0,
+                    width: 100.0,
+                    child: Image.asset(widget.pathOfimg),
+                  ), //Image show
+                  SizedBox(width: 8.0),
+                  SizedBox(
+                    width: screenWidth - 120,
+                    height: 100.0,
+                    child: Column(
+                      mainAxisAlignment:
                       MainAxisAlignment.start, // for name and info
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    titleAndParticipation(
-                        widget.type,
-                        widget.title,
-                        widget.noOfPeopleparticipated,
-                        widget.totalNoofparticipation),
-                    // SizedBox(height: 3.0),
-                    widget.type == 2
-                        ? SizedBox(
-                            width: screenWidth - 118,
-                            child: Text(
-                              widget.jobTitle,
-                              overflow: TextOverflow.ellipsis,
-                              style: textstyle(20.0, Colors.black),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 50.0,
-                            width: screenWidth - 118,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: widget.tags.length,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  children: [
-                                    Center(
-                                      child: Text('#${widget.tags[index]}',
-                                          style: textstyle(
-                                              16.0, Color(0xff12ACB1))),
-                                    ),
-                                    SizedBox(width: 10.0),
-                                  ],
-                                );
-                              },
-                            ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        titleAndParticipation(
+                            widget.type,
+                            widget.title,
+                            widget.noOfPeopleparticipated,
+                            widget.totalNoofparticipation),
+                        // SizedBox(height: 3.0),
+                        widget.type == 2
+                            ? SizedBox(
+                          width: screenWidth - 118,
+                          child: Text(
+                            widget.jobTitle,
+                            overflow: TextOverflow.ellipsis,
+                            style: textstyle(20.0, Colors.black),
                           ),
-                    // SizedBox(height: 8.0),
-                    datetimeRow(widget.type, widget.date, widget.time,
-                        widget.projectDetail, widget.workingPhase),
-                  ],
-                ),
-              ),
-            ]),
+                        )
+                            : SizedBox(
+                          height: 50.0,
+                          width: screenWidth - 118,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: widget.tags.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Center(
+                                    child: Text('#${widget.tags[index]}',
+                                        style: textstyle(
+                                            16.0, Color(0xff12ACB1))),
+                                  ),
+                                  SizedBox(width: 10.0),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        // SizedBox(height: 8.0),
+                        datetimeRow(widget.type, widget.date, widget.time,
+                            widget.projectDetail, widget.workingPhase),
+                      ],
+                    ),
+                  ),
+                ]),
             SizedBox(height: 12.0),
             Row(
               // location
@@ -167,42 +169,44 @@ class _BaseCardState extends State<BaseCard> {
                 ),
                 (widget.type == 2 || widget.type == 3)
                     ? Row(
-                        children: [
-                          Container(
-                            width: 24.0,
-                            height: 24.0,
-                            child: SvgPicture.asset(
-                                'assets/images/timer_logo.svg'),
-                          ),
-                          SizedBox(width: 12.0),
-                          Container(
-                            width: 150.0,
-                            child: Text(
-                              widget.jobDuration,
-                              overflow: TextOverflow.ellipsis,
-                              style: textstyle(18.0, Colors.black),
-                            ),
-                          ),
-                        ],
-                      )
+                  children: [
+                    Container(
+                      width: 24.0,
+                      height: 24.0,
+                      child: SvgPicture.asset(
+                          'assets/images/timer_logo.svg'),
+                    ),
+                    SizedBox(width: 12.0),
+                    Container(
+                      width: 150.0,
+                      child: Text(
+                        widget.jobDuration,
+                        overflow: TextOverflow.ellipsis,
+                        style: textstyle(18.0, Colors.black),
+                      ),
+                    ),
+                  ],
+                )
                     : SizedBox(),
               ],
             ),
             bottomRow(
-                widget.type,
-                widget.price,
-                widget.organiser,
-                widget.jobDuration,
-                widget.organiserId,
-                context,
-                widget.pathOfimg,
-                widget.tags,
-                widget.price.toString(),
-                widget.date,
-                widget.time,
-                widget.title,
-                widget.totalNoofparticipation,
-                widget.location),
+              widget.type,
+              widget.price,
+              widget.organiser,
+              widget.jobDuration,
+              widget.organiserId,
+              context,
+              widget.pathOfimg,
+              widget.tags,
+              widget.price.toString(),
+              widget.date,
+              widget.time,
+              widget.title,
+              widget.totalNoofparticipation,
+              widget.location,
+              widget.docId,
+            ),
           ],
         ),
       ),
@@ -306,53 +310,53 @@ Widget datetimeRow(
     int type, String date, String time, List projectDetail, int workingPhase) {
   return type == 4
       ? SizedBox(
-          width: screenWidth - 125,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              circulerProjectDetails(projectDetail[0], 1, workingPhase),
-              circulerProjectDetails(projectDetail[1], 2, workingPhase),
-              circulerProjectDetails(projectDetail[2], 3, workingPhase),
-              circulerProjectDetails(projectDetail[3], 4, workingPhase),
-              circulerProjectDetails(projectDetail[4], 5, workingPhase),
-              circulerProjectDetails(projectDetail[5], 6, workingPhase),
-            ],
-          ),
-        )
+    width: screenWidth - 125,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        circulerProjectDetails(projectDetail[0], 1, workingPhase),
+        circulerProjectDetails(projectDetail[1], 2, workingPhase),
+        circulerProjectDetails(projectDetail[2], 3, workingPhase),
+        circulerProjectDetails(projectDetail[3], 4, workingPhase),
+        circulerProjectDetails(projectDetail[4], 5, workingPhase),
+        circulerProjectDetails(projectDetail[5], 6, workingPhase),
+      ],
+    ),
+  )
       : SizedBox(
-          width: screenWidth - 125,
-          child: Row(
-            // for date and time
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (type == 1)
-                SvgPicture.asset(
-                  'assets/images/play_logo.svg',
-                  width: 20.0,
-                  height: 20.0,
-                )
-              else
-                SvgPicture.asset(
-                  'assets/images/Calender_End.svg',
-                  width: 20.0,
-                  height: 20.0,
-                ),
-              SizedBox(width: 2.0),
-              Container(
-                width: 195.0,
-                child: type == 2
-                    ? Text(
-                        '$date',
-                        style: textstyle(12.0, Colors.black),
-                      )
-                    : Text(
-                        '$date| $time',
-                        style: textstyle(12.0, Colors.black),
-                      ),
-              ),
-            ],
+    width: screenWidth - 125,
+    child: Row(
+      // for date and time
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        if (type == 1)
+          SvgPicture.asset(
+            'assets/images/play_logo.svg',
+            width: 20.0,
+            height: 20.0,
+          )
+        else
+          SvgPicture.asset(
+            'assets/images/Calender_End.svg',
+            width: 20.0,
+            height: 20.0,
           ),
-        );
+        SizedBox(width: 2.0),
+        Container(
+          width: 195.0,
+          child: type == 2
+              ? Text(
+            '$date',
+            style: textstyle(12.0, Colors.black),
+          )
+              : Text(
+            '$date| $time',
+            style: textstyle(12.0, Colors.black),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 Widget bottomRow(
@@ -369,7 +373,8 @@ Widget bottomRow(
     String time,
     String title,
     int totalNoofparticipation,
-    String location) {
+    String location,
+    String docId) {
   if (type == 1) {
     return Row(
       // price
@@ -384,12 +389,16 @@ Widget bottomRow(
         ),
         GestureDetector(
           onTap: () {
+            print('event');
             // Navigator.push(context, MessageAnimation( exitPage: WhiteScreen(), enterPage:DynamicDetails(type: event  , image: pathofimg, tags:tags , price:price , date:date ,time: time, title: title, totalNoofparticipation :1 , location: location,)));
             // Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child:  DynamicDetails(type: event )));
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DynamicDetails(type: event)));
+                    builder: (context) => DynamicDetails.details(
+                      type: event,
+                      id: docId,
+                    )));
           },
           child: Container(
             width: 119.0,
@@ -474,18 +483,20 @@ Widget bottomRow(
           //  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child:  DynamicDetails(
           //     type:  type == 5 ? sports :  type == 6 ? eSports :  type == 8 ?  peerLearn : socialLearn ,
           //     )));
+          print('act');
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DynamicDetails(
-                        type: type == 5
-                            ? sports
-                            : type == 6
-                                ? eSports
-                                : type == 8
-                                    ? peerLearn
-                                    : socialLearn,
-                      )));
+                  builder: (context) => DynamicDetails.details(
+                    type: type == 5
+                        ? sports
+                        : type == 6
+                        ? eSports
+                        : type == 8
+                        ? peerLearn
+                        : socialLearn,
+                    id: docId,
+                  )));
         }),
       ],
     );
@@ -560,10 +571,10 @@ Widget bottomButton(
           type == 4
               ? 'More Details'
               : (type == 2 || type == 3)
-                  ? 'Apply'
-                  : (type == 8 || type == 9)
-                      ? 'Send Request'
-                      : 'Request to Join',
+              ? 'Apply'
+              : (type == 8 || type == 9)
+              ? 'Send Request'
+              : 'Request to Join',
           style: textstyle(18.0, Colors.white),
         ),
       ),

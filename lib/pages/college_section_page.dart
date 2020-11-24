@@ -1,11 +1,13 @@
 import 'dart:ui';
-
+import 'package:yibe_final_ui/services/activity_database.dart';
+import 'package:yibe_final_ui/services/eventdatabase.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'AddActivity.dart';
+import 'package:yibe_final_ui/model/Activity.dart';
 import '../widget/card.dart';
 import 'PageHandler.dart';
+import 'package:yibe_final_ui/model/event.dart';
 
 class CollegeSectionPage extends StatefulWidget {
   static final routeName = "/CollegeSectionPage";
@@ -22,7 +24,7 @@ class CollegeSectionPage extends StatefulWidget {
 class _CollegeSectionPageState extends State<CollegeSectionPage> {
   var _index = 0;
   ScrollController _controller = ScrollController(initialScrollOffset: 0.1);
-
+  int activeType = 0;
   CarouselController buttonCarouselController = CarouselController();
   int activevalueColor;
   int activeMapButton = 0;
@@ -208,7 +210,13 @@ class _CollegeSectionPageState extends State<CollegeSectionPage> {
           child: FloatingActionButton(
             child: Icon(Icons.add),
             backgroundColor: Color(0xFF0CB5BB),
-            onPressed: () {},
+            onPressed: () {
+              // openBottomModelSheet();
+              //   _pc.show();
+              setState(() {
+                //  pressed = true;
+              });
+            },
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -349,6 +357,7 @@ class _CollegeSectionPageState extends State<CollegeSectionPage> {
                               return GestureDetector(
                                 onTap: () {
                                   _crouselController.nextPage();
+                                  activeType = 0;
                                   print('tap');
                                   //   print(index);
                                   //    buttonCarouselController.jumpToPage(1);
@@ -407,6 +416,7 @@ class _CollegeSectionPageState extends State<CollegeSectionPage> {
                                       onPressed: () {
                                         setState(() {
                                           isVisible = !isVisible;
+                                          activeType = index;
                                         });
                                       },
                                       child: item);
@@ -421,29 +431,21 @@ class _CollegeSectionPageState extends State<CollegeSectionPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddActivity()));
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(
-                              left: 15,
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/images/add_btn.svg',
-                              width: 24.0,
-                              height: 24.0,
-                              color: Color(0xff12ACB1),
-                            ),
-                            // child: Text(
-                            //   '+ADD',
-                            //   style: TextStyle(
-                            //       color: Color(0xff12ACB1), fontSize: 30.0),
-                            // )
+                        Container(
+                          padding: EdgeInsets.only(
+                            left: 15,
                           ),
+                          child: SvgPicture.asset(
+                            'assets/images/add_btn.svg',
+                            width: 24.0,
+                            height: 24.0,
+                            color: Color(0xff12ACB1),
+                          ),
+                          // child: Text(
+                          //   '+ADD',
+                          //   style: TextStyle(
+                          //       color: Color(0xff12ACB1), fontSize: 30.0),
+                          // )
                         ),
                         Container(
                           child: Row(
@@ -513,436 +515,146 @@ class _CollegeSectionPageState extends State<CollegeSectionPage> {
                         ),
                       ],
                     ),
-                    ListView(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      children: [
-                        Visibility(
-                          visible: activeActivity,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/activity_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeActivity,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/activity_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeActivity,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/activity_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeActivity,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg:
-                                'assets/images/activity_college_section_page.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeGrowth,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/growth_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeGrowth,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/growth_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeGrowth,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/growth_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeGrowth,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/growth_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeGrowth,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/growth_card.png',
-                            title: 'Event Card',
-                            totalNoofparticipation: 100,
-                            noOfPeopleparticipated: 10,
-                            tags: ['rich', 'computer Engineer', 'hello'],
-                            date: '31st Mar \'20',
-                            time: '24:24 PM',
-                            location: 'location',
-                            organiser: 'Delhi Public School',
-                            price: 500,
-                            jobTitle: 'Job Title',
-                            jobDuration: '12 weeks',
-                            projectDetail: ['a', 'b', 'c', 'd', 'e', 'f'],
-                            organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeEvents,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/500_startups_events.png',
-                            title: 'Start-up 101',
-                            totalNoofparticipation: 245,
-                            //    noOfPeopleparticipated: 10,
-                            tags: ['Start-Up', 'How'],
-                            date: '31st Oct \'20',
-                            time: '10:30 AM',
-                            location: 'BT Kawde Road, Pune',
-                            organiser: 'Delhi Public School,Pune',
-                            price: 500,
-                            // jobTitle: 'Job Title',
-                            // jobDuration: '12 weeks',
-                            // projectDetail: ['a','b','c','d','e','f'],
-                            // organiserId: 'abc',
-                          ),
-                        ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-
-                        //     type : 1,
-                        //     pathOfimg: 'assets/images/500_startups_events.png',
-                        //     title: 'Start-up 101',
-                        //     totalNoofparticipation: 245,
-                        // //    noOfPeopleparticipated: 10,
-                        //     tags: ['Start-Up','How'],
-                        //     date: '31st Oct \'20',
-                        //     time: '10:30 AM',
-                        //     location: 'BT Kawde Road, Pune',
-                        //     organiser: 'Delhi Public School,Pune',
-                        //     price: 500,
-                        //     // jobTitle: 'Job Title',
-                        //     // jobDuration: '12 weeks',
-                        //     // projectDetail: ['a','b','c','d','e','f'],
-                        //     // organiserId: 'abc',
-                        //   ),
-                        // ),
-                        Visibility(
-                          visible: activeEvents,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/Re_live_music_events.png',
-                            title: 'Re-Live Music',
-                            totalNoofparticipation: 145,
-                            //    noOfPeopleparticipated: 10,
-                            tags: ['Music', 'Re-Live', "80s"],
-                            date: '24th Oct \'20',
-                            time: '08:24 PM',
-                            location: 'Katraj, Pune',
-                            organiser: 'Music Org, Pune',
-                            price: 1500,
-                            // jobTitle: 'Job Title',
-                            // jobDuration: '12 weeks',
-                            // projectDetail: ['a','b','c','d','e','f'],
-                            // organiserId: 'abc',
-                          ),
-                        ),
-                        Visibility(
-                          visible: activeEvents,
-                          child: BaseCard(
-                            type: 1,
-                            pathOfimg: 'assets/images/poolparty_events.png',
-                            title: 'Pool Party',
-                            totalNoofparticipation: 26,
-                            //    noOfPeopleparticipated: 10,
-                            tags: ['Pool', 'Party'],
-                            date: '30th Oct \'20',
-                            time: '06:30 PM',
-                            location: 'Koregaon Park, Pune',
-                            organiser: 'Classy Events',
-                            price: 750,
-                            // jobTitle: 'Job Title',
-                            // jobDuration: '12 weeks',
-                            // projectDetail: ['a','b','c','d','e','f'],
-                            // organiserId: 'abc',
-                          ),
-                        ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     type : 1,
-                        //     organiserId: 'abc',
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Internship',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'locationasfsfadfdgdgsdgsgfdhhdf',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job ',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     organiserId: 'abc',
-                        //     type : 3,
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'QuickFix',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     organiserId: 'abc',
-                        //     type : 4,
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Projects',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //     workingPhase : 2,
-                        //   ),
-                        // ),
-                        //  Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     type : 5,
-                        //     organiserId: 'abc',
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Sports',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     type : 6,
-                        //     organiserId: 'abc',
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'e-Sports',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        //  Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     type : 7,
-                        //     organiserId: 'abc',
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Others',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     organiserId: 'abc',
-                        //     type : 8,
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Peer Learning',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                        // Visibility(
-                        //   visible: activeEvents,
-                        //                 child: BaseCard(
-                        //     organiserId: 'abc',
-                        //     type : 9,
-                        //     pathOfimg: 'assets/images/event_pic.png',
-                        //     title: 'Social Learn',
-                        //     totalNoofparticipation: 100,
-                        //     noOfPeopleparticipated: 10,
-                        //     tags: ['rich','computer Engineer','hello'],
-                        //     date: '31st Mar \'20',
-                        //     time: '24:24 PM',
-                        //     location: 'location',
-                        //     organiser: 'Delhi Public School',
-                        //     price: 500,
-                        //     jobTitle: 'Job Title',
-                        //     jobDuration: '12 weeks',
-                        //     projectDetail: ['a','b','c','d','e','f'],
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                    activeActivity
+                        ? StreamBuilder<List<Activity>>(
+                            stream: ActivityDatabaseService()
+                                .getActivities(activeType),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    String docID =
+                                        snapshot.data[index].activityId;
+                                    return StreamBuilder<ActivityDetails>(
+                                        stream: ActivityDatabaseService()
+                                            .getActivityDetails(
+                                                snapshot.data[index].activityId,
+                                                snapshot
+                                                    .data[index].activityType),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Visibility(
+                                              visible: activeActivity,
+                                              child: BaseCard(
+                                                type: snapshot.data
+                                                            .activityType ==
+                                                        'Sport'
+                                                    ? 5
+                                                    : snapshot.data
+                                                                .activityType ==
+                                                            'ESport'
+                                                        ? 6
+                                                        : 7,
+                                                pathOfimg:
+                                                    'assets/images/activity_card.png',
+                                                title:
+                                                    snapshot.data.activityTitle,
+                                                totalNoofparticipation:
+                                                    snapshot.data.noOfPlayers,
+                                                noOfPeopleparticipated: 0,
+                                                tags: [
+                                                  'rich',
+                                                  'computer Engineer',
+                                                  'hello'
+                                                ],
+                                                date: '',
+                                                time: '',
+                                                location: 'location',
+                                                organiser: 'Rakesh',
+                                                price: 0,
+                                                jobTitle: 'Job Title',
+                                                jobDuration: '2hours',
+                                                projectDetail: [
+                                                  'a',
+                                                  'b',
+                                                  'c',
+                                                  'd',
+                                                  'e',
+                                                  'f'
+                                                ],
+                                                organiserId: 'abc',
+                                                docId: docID,
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        });
+                                  },
+                                );
+                              } else {
+                                return Container();
+                              }
+                            })
+                        : StreamBuilder<List<Event>>(
+                            stream:
+                                EventDatabaseService().getEvents(activeType),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    String docID = snapshot.data[index].eventId;
+                                    return StreamBuilder<EventDetails>(
+                                        stream: EventDatabaseService()
+                                            .getEventDetails(
+                                                snapshot.data[index].eventId),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Visibility(
+                                              visible: activeEvents,
+                                              child: BaseCard(
+                                                type: 1,
+                                                pathOfimg:
+                                                    'assets/images/poolparty_events.png',
+                                                title: snapshot.data.eventName,
+                                                totalNoofparticipation: 100,
+                                                noOfPeopleparticipated: 10,
+                                                tags: [
+                                                  'rich',
+                                                  'computer Engineer',
+                                                  'hello'
+                                                ],
+                                                date: snapshot.data.dateOfEvent,
+                                                time: snapshot.data.timeOfEvent,
+                                                location: snapshot.data.address,
+                                                organiser:
+                                                    snapshot.data.address,
+                                                price: 500,
+                                                jobTitle: 'Job Title',
+                                                jobDuration:
+                                                    snapshot.data.duration,
+                                                projectDetail: [
+                                                  'a',
+                                                  'b',
+                                                  'c',
+                                                  'd',
+                                                  'e',
+                                                  'f'
+                                                ],
+                                                organiserId: 'abc',
+                                                docId: docID,
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        });
+                                  },
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }),
                   ],
                 ),
               ),
